@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Values.name}}
+  labels:
+    aadpodidbinding: {{.Values.podidentityname}}
+    app: {{.Values.app}}
+    group: {{.Values.group}}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Values.name}}
+  template:
+    metadata:
+      labels:
+        app: {{.Values.app}}
+        group: {{.Values.group}}
+    spec:
+      containers:
+        - name: {{.Values.name}}
+          image: {{.Values.image}}
+          imagePullPolicy: {{.Values.imagePullPolicy}}
+          ports:
+            - name: http
+              containerPort: {{.Values.port}}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{.Values.health}}
+              port: {{.Values.port}}
+          env:
+            - name: {{.Values.envName}}
+              valueFrom:
+                secretKeyRef:
+                  name: {{.Values.secretKey.name}}
+                  key: {{.Values.secretKey.key}}

@@ -1,0 +1,28 @@
+#----------------------------------------------------------------------
+#                       Deployment & Service
+#----------------------------------------------------------------------
+name: model1
+namespace: multitenant-model1
+replicaCount: 1
+app: model1
+group: backend
+podidentityname: pod-identity
+
+image: model1multitenantacr2.azurecr.io/multitenant-model1:latest
+imagePullPolicy: Always
+
+port: 7138
+health: /healthznet
+
+service:
+  type: ClusterIP
+  port: 7138
+#----------------------------------------------------------------------
+#                       AKVS
+#----------------------------------------------------------------------
+nameKeyVault: keyvaultmultitenant
+nameKeyVaultSecret: secret-connectionstring-cosmos
+envName: CosmosSettings__ConnectionString
+secretKey:
+  name: cosmos-secret
+  key: ConnectionString
